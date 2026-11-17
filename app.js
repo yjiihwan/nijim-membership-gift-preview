@@ -231,7 +231,7 @@
     const card = (m) => `<div class="mc ${["active", "scheduled"].includes(m.status) ? "" : "dead"}">
       <div class="r1"><span class="nm">${esc(m.name)}</span>${GIFT_ON || m.source !== "gift_auto" ? sourceChip(m) : ""}${stChip(m.status)}</div>
       <div class="r2">${m.start} ~ ${m.end} · ${usageTxt(m)}</div>
-      ${m.source === "gift_auto" ? `<div class="r3">${esc(m.gift.sourceTitle)} 결제로 받은 증정 · 0원${m.status === "revoked" ? ` · ${esc(m.revokeReason)}으로 회수됨` : ""}</div>` : ""}
+      ${m.source === "gift_auto" ? `<div class="r3">${esc(m.gift.sourceTitle)} 결제로 받은 증정 · 0원${m.status === "revoked" ? ` · 회수됨(${esc(m.revokeReason)})` : ""}</div>` : ""}
       ${m.source === "gift_manual" ? `<div class="r3">센터에서 드린 증정 · 0원</div>` : ""}
     </div>`;
     return `<div class="phone"><div class="ph-top"><span class="bk">‹</span>내 멤버십</div><div class="my">
