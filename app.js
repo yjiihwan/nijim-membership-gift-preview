@@ -25,7 +25,7 @@
   const D = () => st.data;
   const prod = (id) => D().products.find((p) => p.id === id);
 
-  function toast(t) { const d = document.createElement("div"); d.className = "saved"; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 1600); }
+  function toast(t) { document.querySelectorAll(".saved").forEach((x) => x.remove()); const d = document.createElement("div"); d.className = "saved"; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 1600); }
 
   // ───────── 관리자 판매설정 ─────────
   const USE_KO = { unlimited: "무제한", period: "기간내", daily: "하루", weekly: "주", monthly: "월" };
@@ -329,7 +329,7 @@
     const pays = D().payments.filter((p) => p.memberId === u.id);
     const logs = D().logs.filter((l) => l.memberId === u.id);
     const dead = (s) => !["active", "scheduled", "paid"].includes(s);
-    return `<div class="ad2"><h2>회원 상세 · ${esc(u.name)}</h2><p class="mi">${u.phone} · 엔짐 상도점</p>
+    return `<div class="ad2"><h2>회원 상세 · ${esc(u.name)}</h2><p class="mi">${u.phone} · ${esc(S.CENTER)}</p>
       <h3>보유 멤버십 <button class="btn" data-manual="1">+ 수동 증정</button></h3>
       <div class="tw"><table><thead><tr><th>멤버십</th><th>구분</th><th>기간</th><th>이용횟수</th><th>금액</th><th>상태</th><th>출처</th></tr></thead><tbody>
       ${ms.map((m) => `<tr class="${dead(m.status) ? "dead" : ""}"><td><b>${esc(m.name)}</b></td><td>${sourceChip(m)}</td><td>${m.start} ~ ${m.end}</td><td><b>${esc(usageTxt(m))}</b><br><span class="src">${esc(usageNow(m).split(" · ").slice(1).join(" · "))}</span>${["active", "scheduled"].includes(m.status) ? `<br><button class="btn sm" data-use="${m.id}" title="시안 조작: 그 멤버십 첫 이용 가능일(오늘 또는 시작일)에 입장 1회 기록">입장 +1 (시안)</button>` : ""}</td>
@@ -367,7 +367,7 @@
 
   function salesView() {
     const v = E.sales(D());
-    return `<div class="ad2"><h2>매출 (11월 · 엔짐 상도점)</h2>
+    return `<div class="ad2"><h2>매출 (11월 · ${esc(S.CENTER)})</h2>
       <div class="tiles" style="margin-top:16px">
         <div class="tile"><div class="k">결제 매출</div><div class="v">${won(v.gross)}원</div></div>
         <div class="tile"><div class="k">환불·취소</div><div class="v">-${won(v.refund)}원</div></div>
