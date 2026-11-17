@@ -9,7 +9,7 @@
   const ME = "u1";
 
   let st = load();
-  let view = qs.get("v") || "admin";
+  let view = qs.get("v") === "my" ? "admin" : (qs.get("v") || "admin");
   let open = {}; // 관리자 증정 칸 펼침 상태
   let done = null; // 결제 완료 화면 데이터
   // 옵션선택·결제진행에서 고른 상품 (주소 ?buy=p_pt_event:e12&start=2026-11-27 로 바로 열 수 있음)
@@ -276,7 +276,7 @@
 
   function giftLines(list) {
     return list.map((g) => `<div class="gl">🎁 <b>${esc(g.name)} ${esc(g.perLabel)}</b> · ${esc(E.usageLabel(g))} <span class="z">0원</span><br>
-      <span class="d">${g.start} ~ ${g.end} · 내 멤버십에 들어갔어요</span>
+      <span class="d">${g.start} ~ ${g.end}</span>
       ${g.gift.chainedAfter ? `<br><span class="chain">보유 중인 ${esc(g.category)}(~${g.gift.chainedAfter})이 끝난 다음 날부터 시작해요</span>` : ""}</div>`).join("");
   }
   function doneView() {
@@ -287,16 +287,16 @@
       <div class="ok">✓</div><h5>결제가 완료됐어요</h5><p class="sub">${esc(r.payment.title)} · ${won(r.payment.amount)}원</p>
       <div class="kv" style="margin-top:22px"><span class="k">구매 멤버십</span><span class="v">${esc(E.productLabel(p))}<br><span style="font-weight:400;color:#6B7280;font-size:12.5px">${r.purchase.start} ~ ${r.purchase.end} · ${esc(E.usageLabel(r.purchase))}</span></span></div>
       ${gifts.length ? `<div class="gbox"><div class="gt">🎁 증정 멤버십이 함께 발급됐어요</div>${giftLines(gifts)}</div>` : ""}
-      <button class="paybtn" data-go="my">내 멤버십 보기</button><button class="ghost" data-go="shop">계속 둘러보기</button>
+      <button class="paybtn" data-go="shop">확인</button>
     </div></div>`;
   }
 
-  // ───────── 내 멤버십 / 관리자 ─────────
+  // ───────── 관리자 ─────────
   const sourceChip = (m) => m.source === "gift_auto" ? `<span class="chip gift">🎁 ${esc(m.gift.sourceCategory)} 구매 증정</span>`
     : m.source === "gift_manual" ? `<span class="chip man">수동 증정</span>` : `<span class="chip">구매</span>`;
   const stChip = (s) => `<span class="chip st-${s}">${E.STATUS_KO[s]}</span>`;
   const usageTxt = (m) => E.usageLabel(m);
-  // 내 멤버십·회원상세용: 제한 + 지금 창에서 쓴 횟수
+  // 회원상세용: 제한 + 지금 창에서 쓴 횟수
   function usageNow(m) {
     const u = E.usageState(m, TODAY > m.start ? TODAY : m.start);
     if (m.status === "revoked" && m.revokeUsage) return `${u.label} · 회수 전 ${m.revokeUsage.used}회 사용`;
@@ -305,22 +305,6 @@
     if (!u.limited) return `${u.label} · 지금까지 ${u.used}회 이용`;
     if (m.usage === "period") return `${u.label} · ${u.inWin}회 사용 · ${u.left}회 남음`;
     return `${u.label} · ${u.win} ${u.inWin}/${m.count}회 사용`;
-  }
-
-  function myView() {
-    const ms = D().memberships.filter((m) => m.memberId === ME);
-    const live = ms.filter((m) => ["active", "scheduled"].includes(m.status)).sort((a, b) => (a.start < b.start ? -1 : 1));
-    const dead = ms.filter((m) => !["active", "scheduled"].includes(m.status));
-    const card = (m) => `<div class="mc ${["active", "scheduled"].includes(m.status) ? "" : "dead"}">
-      <div class="r1"><span class="nm">${esc(m.name)}</span>${GIFT_ON || m.source !== "gift_auto" ? sourceChip(m) : ""}${stChip(m.status)}</div>
-      <div class="r2">${m.start} ~ ${m.end}</div>
-      <div class="r4"><span class="ut">이용횟수</span><span class="uv">${esc(usageNow(m))}</span></div>
-      ${m.source === "gift_auto" ? `<div class="r3">${esc(m.gift.sourceTitle)} 결제로 받은 증정 · 0원${m.status === "revoked" ? ` · 회수됨(${esc(m.revokeReason)})` : ""}</div>` : ""}
-      ${m.source === "gift_manual" ? `<div class="r3">센터에서 드린 증정 · 0원</div>` : ""}
-    </div>`;
-    return `<div class="phone"><div class="ph-top"><span class="bk">‹</span>내 멤버십</div><div class="my">
-      <h6>이용 중 · 시작 전 (${live.length})</h6>${live.map(card).join("") || `<p class="mi">없음</p>`}
-      ${dead.length ? `<h6>지난 멤버십 (${dead.length})</h6>${dead.map(card).join("")}` : ""}</div></div>`;
   }
 
   function memberView() {
@@ -386,7 +370,7 @@
     $("#o-exist").checked = st.exist;
     $("#o-start").value = cart.start;
     if (view === "done" && !done) view = "shop";
-    const V = { admin: adminView, shop: shopView, opt: optView, pay: payView, done: doneView, my: myView, member: memberView, sales: salesView }[view] || adminView;
+    const V = { admin: adminView, shop: shopView, opt: optView, pay: payView, done: doneView, member: memberView, sales: salesView }[view] || adminView;
     $("#app").innerHTML = V();
     document.body.dataset.view = view;
   }

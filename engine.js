@@ -39,7 +39,7 @@
     return cs.find((c) => c.key === key) || (cs.length === 1 ? cs[0] : null);
   }
 
-  // 사용 기록(uses = 입장 날짜 목록)으로 남은 횟수 계산. 주=월~일, 월=달력 월(기존 서비스 기준이 있으면 그걸 따름)
+  // 사용 기록(uses = 입장 날짜 목록)으로 남은 횟수 계산. 주=월~일, 월=1일~말일(달력 기준, D5 확정)
   function usageWindow(m, day) {
     if (m.usage === "daily") return [day, day, "오늘"];
     if (m.usage === "weekly") { const dow = (parse(day).getUTCDay() + 6) % 7; const a = addDays(day, -dow); return [a, addDays(a, 6), "이번 주"]; }
