@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>니짐내짐 멤버십 자동 증정 시안</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="app.css?v=1">
+</head>
+<body>
+<div class="demo" id="demo">
+  <div class="demo-h">멤버십 자동 증정 시안 <span>(실제 서비스 아님 · 더미 데이터 · 오늘=2026-11-17)</span></div>
+  <nav class="demo-nav" id="nav">
+    <a data-v="admin">① 관리자 판매설정</a>
+    <a data-v="shop">② 고객 구매</a>
+    <a data-v="my">③ 내 멤버십</a>
+    <a data-v="member">④ 관리자 회원상세</a>
+    <a data-v="sales">⑤ 매출</a>
+  </nav>
+  <div class="demo-opt">
+    <label><input type="checkbox" id="o-exist"> 고객이 헬스(~12-20) 이미 보유</label>
+    <button id="o-reset">처음 상태로</button>
+  </div>
+</div>
+<main id="app"></main>
+<div id="modal"></div>
+<script src="engine.js?v=1"></script>
+<script src="data.js?v=1"></script>
+<script src="app.js?v=1"></script>
+</body>
+</html>
